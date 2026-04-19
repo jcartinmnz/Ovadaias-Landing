@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ovadaias — IA Corporativa para tu Empresa | Expertia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ─── RESET & BASE ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple:    #7B35FF;
+      --purple-dk: #4A22C4;
+      --blue:      #2D9CFF;
+      --bg:        #0B0B0B;
+      --panel:     #1C1C1E;
+      --white:     #F3F2F0;
+      --white-60:  rgba(243,242,240,0.60);
+      --white-30:  rgba(243,242,240,0.30);
+      --white-08:  rgba(243,242,240,0.08);
+      --purple-20: rgba(123,53,255,0.22);
+      --purple-30: rgba(123,53,255,0.35);
+      --gradient:  linear-gradient(135deg,#4A22C4 0%,#7B35FF 50%,#2D9CFF 100%);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    h1,h2,h3,h4 { font-family: 'Orbitron', sans-serif; line-height: 1.15; }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; }
+
+    /* ─── PAGE LOAD CURTAIN ─── */
+    #curtain {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 0.8s ease, visibility 0.8s;
+    }
+    #curtain.gone { opacity: 0; visibility: hidden; }
+    .curtain-logo {
+      font-family: 'Orbitron', sans-serif; font-size: 3rem; font-weight: 900;
+      color: var(--purple);
+      filter: drop-shadow(0 0 24px var(--purple));
+      animation: curtain-pulse 0.6s ease-in-out infinite alternate;
+    }
+    @keyframes curtain-pulse { from{opacity:0.4;} to{opacity:1;} }
+
+    /* ─── SCROLL PROGRESS BAR ─── */
+    #scroll-bar {
+      position: fixed; top: 0; left: 0; height: 2px; z-index: 9998;
+      background: var(--gradient); width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    /* ─── SCROLL ANIMATIONS ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.75s cubic-bezier(.16,1,.3,1), transform 0.75s cubic-bezier(.16,1,.3,1);
+    }
+    .reveal.from-left  { transform: translateX(-40px); }
+    .reveal.from-right { transform: translateX(40px); }
+    .reveal.scale-in   { transform: scale(0.92); }
+    .reveal.visible    { opacity: 1; transform: translateY(0) translateX(0) scale(1); }
+
+    /* ─── PARTICLES ─── */
+    #particles { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+    .particle {
+      position: absolute; border-radius: 50%;
+      background: var(--purple);
+      animation: particle-drift linear infinite;
+      opacity: 0;
+    }
+    @keyframes particle-drift {
+      0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+      10%  { opacity: 0.5; }
+      90%  { opacity: 0.2; }
+      100% { transform: translateY(-20vh) scale(1.5); opacity: 0; }
+    }
+
+    /* ─── 3D TILT CARDS ─── */
+    .tilt-card { transform-style: preserve-3d; transition: transform 0.15s ease; }
+
+    /* ─── GLITCH ─── */
+    @keyframes glitch-1 {
+      0%,95%,100% { clip-path: none; transform: none; opacity:1; }
+      96% { clip-path: inset(30% 0 50% 0); transform: translateX(-4px); opacity:0.8; }
+      97% { clip-path: inset(60% 0 10% 0); transform: translateX(4px); opacity:0.9; }
+      98% { clip-path: inset(10% 0 70% 0); transform: translateX(-2px); opacity:1; }
+      99% { clip-path: none; transform: none; }
+    }
+    .terminal-logo { animation: float 5s ease-in-out infinite, glitch-1 8s infinite; }
+
+    /* ─── MAGNETIC BUTTON WRAPPER ─── */
+    .mag-wrap { display: inline-block; }
+
+    /* ─── SECTION DIVIDER ─── */
+    .section-divider {
+      width: 100%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--purple-30), transparent);
+      border: none; margin: 0;
+    }
+
+    /* ─── CURSOR GLOW ─── */
+    #cursor-glow {
+      pointer-events: none;
+      position: fixed;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99,39,236,0.13) 0%, transparent 70%);
+      transform: translate(-50%,-50%);
+      transition: left 0.12s ease, top 0.12s ease;
+      z-index: 0;
+      display: none;
+    }
+    @media(hover:hover){ #cursor-glow { display: block; } }
+
+    /* ─── NAVBAR ─── */
+    #navbar {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5vw;
+      height: 68px;
+      transition: background 0.3s, border-color 0.3s, backdrop-filter 0.3s;
+      border-bottom: 1px solid transparent;
+    }
+    #navbar.scrolled {
+      background: rgba(11,11,11,0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-color: var(--white-08);
+    }
+    .nav-logo img { height: 36px; width: auto; object-fit: contain; }
+    .nav-links { display: flex; gap: 2.2rem; }
+    .nav-links a {
+      font-size: 0.88rem; font-weight: 500; color: var(--white-60);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .btn-demo {
+      display: inline-flex; align-items: center;
+      padding: 0.55rem 1.3rem;
+      background: var(--purple);
+      border-radius: 6px;
+      font-size: 0.88rem; font-weight: 600; color: var(--white);
+      position: relative; overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-demo::after {
+      content: '';
+      position: absolute; top: 0; left: -100%;
+      width: 60%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+      transition: left 0.45s ease;
+    }
+    .btn-demo:hover::after { left: 140%; }
+    .btn-demo:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(99,39,236,0.45); }
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+    .nav-hamburger span { width: 24px; height: 2px; background: var(--white); border-radius: 2px; }
+    @media(max-width:768px){
+      .nav-links { display: none; position: absolute; top: 68px; left: 0; right: 0;
+        flex-direction: column; background: rgba(11,11,11,0.97);
+        padding: 1.5rem 5vw; gap: 1.4rem;
+        border-bottom: 1px solid var(--white-08); }
+      .nav-links.open { display: flex; }
+      .nav-hamburger { display: flex; }
+    }
+
+    /* ─── HERO ─── */
+    #hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 0 5vw;
+      overflow: hidden;
+    }
+    .hero-grid {
+      position: absolute; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(99,39,236,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99,39,236,0.07) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .hero-orb {
+      position: absolute; z-index: 0;
+      width: 700px; height: 700px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(99,39,236,0.18) 0%, transparent 65%);
+      top: 50%; left: 50%; transform: translate(-50%,-50%);
+      pointer-events: none;
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 860px; }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--white-08); border: 1px solid var(--purple-30);
+      border-radius: 100px; padding: 0.3rem 1rem;
+      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.08em;
+      color: var(--white-60); margin-bottom: 2.2rem;
+    }
+    .hero-eyebrow span { width: 6px; height: 6px; border-radius: 50%; background: var(--purple); display: block; }
+    #hero-headline {
+      font-size: clamp(2.6rem,7vw,5rem);
+      font-weight: 900; color: var(--white);
+      margin-bottom: 1.5rem; letter-spacing: -0.02em;
+      min-height: 1.15em;
+    }
+    #hero-headline .cursor { border-right: 3px solid var(--purple); animation: blink 0.75s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    .hero-sub {
+      font-size: clamp(1rem,2vw,1.15rem); color: var(--white-60);
+      max-width: 620px; margin: 0 auto 2.8rem;
+      font-weight: 400; line-height: 1.7;
+    }
+    .hero-ctas { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3.5rem; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: var(--gradient);
+      border-radius: 8px;
+      font-size: 1rem; font-weight: 600; color: var(--white);
+      position: relative; overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary::after {
+      content: ''; position: absolute; top: 0; left: -100%;
+      width: 60%; height: 100%;
+      background: linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);
+      transition: left 0.45s ease;
+    }
+    .btn-primary:hover::after { left: 140%; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 36px rgba(99,39,236,0.5); }
+    .btn-ghost {
+      display: inline-flex; align-items: center;
+      padding: 0.85rem 2rem;
+      background: transparent;
+      border: 1px solid var(--purple-30);
+      border-radius: 8px;
+      font-size: 1rem; font-weight: 500; color: var(--white-60);
+      transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--purple); color: var(--white); box-shadow: 0 0 20px var(--purple-20); }
+    /* ─── TERMINAL LOGO ─── */
+    .hero-logo-wrap {
+      margin: 0 auto;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .terminal-logo {
+      position: relative;
+      display: inline-flex; align-items: center; gap: 0.15em;
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(3.5rem, 10vw, 7rem);
+      font-weight: 900;
+      color: var(--purple);
+      letter-spacing: -0.02em;
+      animation: float 5s ease-in-out infinite;
+      filter: drop-shadow(0 0 18px rgba(99,39,236,0.7));
+    }
+    .terminal-logo .caret {
+      display: inline-block;
+      animation: caret-enter 1.2s cubic-bezier(.16,1,.3,1) both;
+      transform-origin: left center;
+    }
+    .terminal-logo .underscore {
+      display: inline-block;
+      animation: underscore-enter 1.2s 0.2s cubic-bezier(.16,1,.3,1) both, blink-cursor 1s 1.5s step-end infinite;
+      transform-origin: left center;
+    }
+    .terminal-logo .scan {
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(99,39,236,0.04) 3px, rgba(99,39,236,0.04) 4px);
+      pointer-events: none; border-radius: 4px;
+      animation: scan-move 4s linear infinite;
+    }
+    .terminal-glow-ring {
+      position: absolute;
+      width: 220%; height: 220%;
+      top: 50%; left: 50%; transform: translate(-50%,-50%);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99,39,236,0.18) 0%, transparent 60%);
+      animation: pulse-glow 3s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes caret-enter {
+      from { opacity:0; transform: translateX(-30px) scale(0.6); }
+      to   { opacity:1; transform: translateX(0) scale(1); }
+    }
+    @keyframes underscore-enter {
+      from { opacity:0; transform: scaleX(0); }
+      to   { opacity:1; transform: scaleX(1); }
+    }
+    @keyframes blink-cursor {
+      0%,100% { opacity:1; } 50% { opacity:0; }
+    }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+    @keyframes scan-move {
+      0%   { background-position-y: 0; }
+      100% { background-position-y: 8px; }
+    }
+    @keyframes pulse-glow {
+      0%,100% { opacity:0.7; transform: translate(-50%,-50%) scale(1); }
+      50%     { opacity:1;   transform: translate(-50%,-50%) scale(1.12); }
+    }
+
+    /* ─── MOBILE RESPONSIVE ─── */
+    @media(max-width: 768px) {
+      /* Sections */
+      section { padding: 4rem 6vw; }
+
+      /* Hero */
+      #hero { min-height: 100svh; padding: 0 6vw; align-items: center; }
+      .hero-eyebrow { font-size: 0.72rem; margin-bottom: 1.4rem; }
+      #hero-headline { font-size: clamp(2rem, 9vw, 3rem); min-height: auto; margin-bottom: 1.2rem; }
+      .hero-sub { font-size: 0.97rem; margin-bottom: 2rem; }
+      .hero-ctas {
+        flex-direction: column; align-items: stretch; gap: 0.75rem;
+        margin-bottom: 2.5rem;
+      }
+      .hero-ctas .btn-primary,
+      .hero-ctas .btn-ghost { width: 100%; justify-content: center; padding: 1rem; }
+      .terminal-logo { font-size: clamp(3rem, 18vw, 4.5rem); }
+      .terminal-glow-ring { width: 300%; height: 300%; }
+      .hero-orb { width: 340px; height: 340px; }
+
+      /* Social proof */
+      .logo-row { gap: 1.5rem; }
+      .stat-strip { flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+      .stat-strip .to { font-size: 2.4rem; }
+
+      /* Problem cards */
+      .prob-grid { grid-template-columns: 1fr; gap: 1rem; margin-top: 2rem; }
+
+      /* Module cards */
+      .modules-grid { grid-template-columns: 1fr; gap: 1rem; margin-top: 2rem; }
+      .module-card { padding: 1.6rem; }
+
+      /* Steps */
+      .steps-wrap { flex-direction: column; align-items: center; gap: 0; }
+      .step { width: 100%; max-width: 320px; }
+      .connector-wrap { padding: 0.8rem 0; transform: rotate(90deg); }
+      .step-desc { max-width: 100%; }
+
+      /* Caso */
+      .caso-card { padding: 2rem 1.4rem; }
+      .caso-metrics { gap: 1.5rem; }
+      .caso-metric .num { font-size: 1.5rem; }
+
+      /* Pricing */
+      .pricing-grid { grid-template-columns: 1fr; max-width: 420px; }
+      .price-card.featured { order: -1; }
+      .price-card .btn-primary,
+      .price-card .btn-ghost { width: 100%; justify-content: center; }
+
+      /* Section titles */
+      .section-title { font-size: clamp(1.5rem, 6vw, 2rem); }
+      .section-sub { font-size: 0.95rem; }
+
+      /* CTA final */
+      #cta-final { padding: 5rem 6vw; }
+      #cta-final .section-title { font-size: clamp(1.7rem, 7vw, 2.5rem); }
+      #cta-final .btn-primary { width: 100%; max-width: 340px; justify-content: center; }
+
+      /* Footer */
+      .footer-inner { flex-direction: column; gap: 2rem; }
+      .footer-links { gap: 1.2rem; }
+
+      /* Social proof label */
+      #social-proof { padding: 2.5rem 6vw; }
+
+      /* Navbar */
+      .btn-demo { font-size: 0.8rem; padding: 0.5rem 1rem; }
+    }
+
+    /* Fine-tune very small phones */
+    @media(max-width: 380px) {
+      #hero-headline { font-size: 1.85rem; }
+      .terminal-logo { font-size: 3rem; }
+      .caso-metrics { flex-direction: column; gap: 1.2rem; align-items: flex-start; }
+    }
+
+    /* Smooth active state for touch */
+    @media(hover: none) {
+      .btn-primary:active, .btn-demo:active {
+        transform: scale(0.97);
+        opacity: 0.85;
+      }
+      .module-card:active, .prob-card:active {
+        border-color: var(--purple);
+        transform: scale(0.99);
+      }
+    }
+    section { padding: 6rem 5vw; }
+    .section-label {
+      font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--purple); font-weight: 600; margin-bottom: 1rem;
+    }
+    .section-title {
+      font-size: clamp(1.8rem,4vw,2.8rem); font-weight: 700;
+      margin-bottom: 1rem; letter-spacing: -0.02em;
+    }
+    .section-sub { font-size: 1.05rem; color: var(--white-60); max-width: 560px; }
+    .max-w { max-width: 1100px; margin: 0 auto; }
+
+    /* ─── SOCIAL PROOF ─── */
+    #social-proof {
+      padding: 3.5rem 5vw;
+      border-top: 1px solid var(--white-08);
+      border-bottom: 1px solid var(--white-08);
+    }
+    .social-inner { max-width: 1100px; margin: 0 auto; }
+    .social-label {
+      text-align: center; font-size: 0.78rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--white-30); margin-bottom: 2.5rem;
+    }
+    .logo-row {
+      display: flex; align-items: center; justify-content: center;
+      gap: 3.5rem; flex-wrap: wrap; margin-bottom: 3rem;
+    }
+    .logo-placeholder {
+      height: 28px; width: 90px;
+      background: var(--white-08); border-radius: 4px;
+      opacity: 0.45; transition: opacity 0.2s;
+    }
+    .logo-placeholder:hover { opacity: 1; }
+    .stat-strip {
+      display: flex; align-items: center; justify-content: center;
+      gap: 1rem; font-family: 'Orbitron', sans-serif;
+    }
+    .stat-strip .from { font-size: 1.6rem; color: var(--white-30); font-weight: 700; }
+    .stat-strip .arrow { font-size: 1.2rem; color: var(--purple); }
+    .stat-strip .to { font-size: 2rem; font-weight: 900; color: var(--white); }
+    .stat-strip .label { font-size: 0.78rem; color: var(--white-60); font-family: 'Inter', sans-serif; margin-left: 0.5rem; }
+
+    /* ─── PROBLEMA → SOLUCIÓN ─── */
+    #problema { background: var(--bg); }
+    .prob-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+      gap: 1.5rem; margin-top: 3rem;
+    }
+    .prob-card {
+      background: var(--panel); border: 1px solid var(--white-08);
+      border-radius: 12px; padding: 2rem;
+      position: relative; overflow: hidden;
+      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+    }
+    .prob-card:hover { border-color: var(--purple-30); transform: scale(1.02); box-shadow: 0 0 28px var(--purple-20); }
+    .prob-card .before {
+      font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em;
+      color: rgba(243,242,240,0.3); margin-bottom: 0.5rem;
+    }
+    .prob-card .before-text { font-size: 1rem; color: var(--white-60); margin-bottom: 1.5rem; text-decoration: line-through; }
+    .prob-card .arrow-down { font-size: 1.4rem; color: var(--purple); margin-bottom: 1rem; }
+    .prob-card .after-text { font-size: 1rem; font-weight: 500; color: var(--white); }
+
+    /* ─── PRODUCT MODULES ─── */
+    #modulos { background: var(--bg); }
+    .modules-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+      gap: 1.5rem; margin-top: 3rem;
+    }
+    .module-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--purple-30);
+      border-radius: 14px; padding: 2.2rem;
+      backdrop-filter: blur(4px);
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+      position: relative; overflow: hidden;
+    }
+    .module-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at top left, rgba(99,39,236,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .module-card:hover { transform: scale(1.02); box-shadow: 0 0 36px var(--purple-30); border-color: var(--purple); }
+    .module-icon { font-size: 2rem; margin-bottom: 1.2rem; }
+    .module-title { font-family: 'Orbitron', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 0.7rem; }
+    .module-desc { font-size: 0.92rem; color: var(--white-60); line-height: 1.6; }
+
+    /* ─── CÓMO FUNCIONA ─── */
+    #como-funciona { background: var(--panel); }
+    .steps-wrap { display: flex; align-items: flex-start; gap: 0; margin-top: 4rem; position: relative; }
+    .step { flex: 1; text-align: center; position: relative; z-index: 1; }
+    .step-num {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--bg); border: 2px solid var(--purple);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Orbitron', sans-serif; font-size: 1rem; font-weight: 700;
+      color: var(--purple); margin: 0 auto 1.2rem;
+      box-shadow: 0 0 20px rgba(99,39,236,0.4);
+    }
+    .step-title { font-family: 'Orbitron', sans-serif; font-size: 0.95rem; margin-bottom: 0.6rem; }
+    .step-desc { font-size: 0.88rem; color: var(--white-60); max-width: 200px; margin: 0 auto; }
+    .connector-wrap {
+      flex: 0 0 auto; align-self: center;
+      padding-bottom: 4.5rem;
+      position: relative;
+    }
+    .connector-svg { width: 80px; height: 2px; }
+    .connector-line {
+      stroke: var(--purple);
+      stroke-width: 1.5;
+      stroke-dasharray: 80;
+      stroke-dashoffset: 80;
+      transition: stroke-dashoffset 1.2s ease;
+    }
+    .connector-line.drawn { stroke-dashoffset: 0; }
+    @media(max-width:768px){
+      .steps-wrap { flex-direction: column; align-items: center; gap: 2rem; }
+      .connector-wrap { transform: rotate(90deg); }
+    }
+
+    /* ─── CASO DE ÉXITO ─── */
+    #caso { background: var(--bg); }
+    .caso-card {
+      max-width: 820px; margin: 3rem auto 0;
+      background: var(--panel);
+      border: 1px solid var(--purple);
+      border-radius: 16px; padding: 3rem;
+      box-shadow: 0 0 60px rgba(99,39,236,0.2);
+      position: relative; overflow: hidden;
+    }
+    .caso-card::before {
+      content: ''; position: absolute;
+      top: 0; right: 0; width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(99,39,236,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .caso-company { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--purple); margin-bottom: 1rem; }
+    .caso-quote { font-size: 1.2rem; color: var(--white); margin-bottom: 2rem; line-height: 1.7; }
+    .caso-metrics { display: flex; gap: 2.5rem; flex-wrap: wrap; }
+    .caso-metric { text-align: center; }
+    .caso-metric .num {
+      font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 900;
+      background: var(--gradient); -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .caso-metric .lbl { font-size: 0.8rem; color: var(--white-60); margin-top: 0.2rem; }
+
+    /* ─── PRECIOS ─── */
+    #precios { background: var(--panel); }
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+      gap: 1.5rem; max-width: 780px; margin: 3rem auto 0;
+    }
+    .price-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--white-08);
+      border-radius: 14px; padding: 2.5rem;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .price-card:hover { transform: translateY(-4px); }
+    .price-card.featured {
+      border: 1px solid transparent;
+      background: linear-gradient(var(--panel), var(--panel)) padding-box,
+                  var(--gradient) border-box;
+      box-shadow: 0 0 48px rgba(99,39,236,0.25);
+    }
+    .price-badge {
+      display: inline-block; background: var(--purple-20); color: var(--purple);
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.25rem 0.7rem; border-radius: 100px; margin-bottom: 1.2rem;
+    }
+    .price-name { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; margin-bottom: 0.5rem; }
+    .price-amount { font-size: 2.5rem; font-weight: 700; margin: 0.8rem 0; }
+    .price-amount span { font-size: 1rem; color: var(--white-60); font-weight: 400; }
+    .price-features { list-style: none; margin: 1.5rem 0 2rem; display: flex; flex-direction: column; gap: 0.8rem; }
+    .price-features li { display: flex; align-items: center; gap: 0.6rem; font-size: 0.9rem; color: var(--white-60); }
+    .price-features li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--purple); flex-shrink: 0; }
+    .price-note { text-align: center; font-size: 0.82rem; color: var(--white-30); margin-top: 2rem; }
+
+    /* ─── FAQ ─── */
+    #faq { background: var(--bg); }
+    .faq-list { max-width: 720px; margin: 3rem auto 0; display: flex; flex-direction: column; gap: 0.5rem; }
+    .faq-item { border: 1px solid var(--white-08); border-radius: 10px; overflow: hidden; }
+    .faq-q {
+      width: 100%; background: none; border: none; text-align: left;
+      padding: 1.4rem 1.6rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+      color: var(--white); font-size: 0.97rem; font-weight: 500; font-family: 'Inter', sans-serif;
+      transition: background 0.2s;
+    }
+    .faq-q:hover { background: var(--white-08); }
+    .faq-icon { font-size: 1.2rem; color: var(--purple); transition: transform 0.3s; flex-shrink: 0; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .faq-a {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s;
+      font-size: 0.92rem; color: var(--white-60); line-height: 1.7;
+    }
+    .faq-item.open .faq-a { max-height: 200px; padding: 0 1.6rem 1.4rem; }
+
+    /* ─── CTA FINAL ─── */
+    #cta-final {
+      background: var(--bg);
+      text-align: center; padding: 8rem 5vw;
+      position: relative; overflow: hidden;
+    }
+    .cta-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background: var(--gradient); opacity: 0.12;
+    }
+    .cta-glow {
+      position: absolute; top: 50%; left: 50%;
+      width: 600px; height: 300px;
+      background: radial-gradient(ellipse, rgba(99,39,236,0.3) 0%, transparent 65%);
+      transform: translate(-50%,-50%);
+      pointer-events: none;
+    }
+    #cta-final .section-title { font-size: clamp(2rem,5vw,3.5rem); position: relative; z-index: 1; }
+    #cta-final .section-sub { margin: 1rem auto 2.5rem; text-align: center; position: relative; z-index: 1; }
+    #cta-final .btn-primary { font-size: 1.1rem; padding: 1rem 2.5rem; position: relative; z-index: 1; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--panel); border-top: 1px solid var(--white-08);
+      padding: 3rem 5vw;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: flex-start; justify-content: space-between;
+      flex-wrap: wrap; gap: 2.5rem;
+    }
+    .footer-brand { display: flex; flex-direction: column; gap: 0.8rem; }
+    .footer-brand img { height: 32px; object-fit: contain; }
+    .footer-tagline { font-size: 0.84rem; color: var(--white-60); max-width: 220px; }
+    .footer-links { display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; }
+    .footer-links a { font-size: 0.84rem; color: var(--white-60); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--white); }
+    .footer-copy { width: 100%; text-align: center; font-size: 0.78rem; color: var(--white-30); padding-top: 2rem; border-top: 1px solid var(--white-08); }
+
+  </style>
+</head>
+<body>
+
+<!-- Page load curtain -->
+<div id="curtain"><div class="curtain-logo">&gt;_</div></div>
+<!-- Scroll progress -->
+<div id="scroll-bar"></div>
+
+<!-- Cursor glow -->
+<div id="cursor-glow"></div>
+
+<!-- ══════════════════════════════════════════ 1. NAVBAR -->
+<nav id="navbar">
+  <a class="nav-logo" href="#">
+    <img src="uploads/2.png" alt="Expertia">
+  </a>
+  <div class="nav-links" id="nav-links">
+    <a href="#modulos">Producto</a>
+    <a href="#como-funciona">Cómo funciona</a>
+    <a href="#precios">Precios</a>
+    <a href="#faq">Contacto</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <a href="#cta-final" class="btn-demo">Solicitar Demo</a>
+    <div class="nav-hamburger" id="hamburger" onclick="document.getElementById('nav-links').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════ 2. HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-orb"></div>
+  <div id="particles"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow reveal"><span></span> IA Corporativa para LATAM</div>
+    <h1 id="hero-headline"><span id="typed-text"></span><span class="cursor">|</span></h1>
+    <p class="hero-sub reveal">
+      Ovadaias es el panel de control donde tu equipo chatea con IA, atiende clientes en WhatsApp
+      y genera marketing — todo conectado con el conocimiento real de tu negocio.
+    </p>
+    <div class="hero-ctas reveal">
+      <a href="#cta-final" class="btn-primary">Ver Demo Gratis →</a>
+      <a href="#modulos" class="btn-ghost">¿Qué es Ovadaias?</a>
+    </div>
+    <div class="hero-logo-wrap reveal">
+      <div style="position:relative; display:inline-block;">
+        <div class="terminal-glow-ring"></div>
+        <div class="terminal-logo">
+          <span class="caret">&gt;</span><span class="underscore">_</span>
+          <div class="scan"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ 3. SOCIAL PROOF -->
+<section id="social-proof">
+  <div class="social-inner">
+    <p class="social-label">Empresas que ya operan con IA</p>
+    <div class="logo-row reveal">
+      <div class="logo-placeholder"></div>
+      <div class="logo-placeholder"></div>
+      <div class="logo-placeholder"></div>
+      <div class="logo-placeholder"></div>
+      <div class="logo-placeholder"></div>
+    </div>
+    <div class="stat-strip reveal">
+      <span class="from">10 min</span>
+      <span class="arrow">→</span>
+      <span class="to"><span class="counter" data-target="3" data-suffix=" seg">0</span></span>
+      <span class="label">tiempo de respuesta promedio</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ 4. PROBLEMA → SOLUCIÓN -->
+<section id="problema">
+  <div class="max-w">
+    <p class="section-label reveal">El problema</p>
+    <h2 class="section-title reveal">¿Cuánto tiempo pierde tu equipo<br>respondiendo lo mismo?</h2>
+    <div class="prob-grid">
+      <div class="prob-card reveal">
+        <div class="before">Antes</div>
+        <div class="before-text">WhatsApp atendido manualmente, 8h/día</div>
+        <div class="arrow-down">↓</div>
+        <div class="after-text">Agente IA que responde 24/7 sin pausas</div>
+      </div>
+      <div class="prob-card reveal">
+        <div class="before">Antes</div>
+        <div class="before-text">Buscar info en docs: ~10 minutos por consulta</div>
+        <div class="arrow-down">↓</div>
+        <div class="after-text">Respuesta en lenguaje natural en 3 segundos</div>
+      </div>
+      <div class="prob-card reveal">
+        <div class="before">Antes</div>
+        <div class="before-text">Crear contenido de marketing desde cero</div>
+        <div class="arrow-down">↓</div>
+        <div class="after-text">Marketing Studio genera carruseles completos con IA</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ 5. MÓDULOS -->
+<section id="modulos">
+  <div class="max-w">
+    <p class="section-label reveal">El producto</p>
+    <h2 class="section-title reveal">El centro de mando de IA<br>para tu empresa</h2>
+    <p class="section-sub reveal">Cuatro módulos integrados. Un solo panel. Todo conectado con el conocimiento real de tu negocio.</p>
+    <div class="modules-grid" style="margin-top:3rem;">
+      <div class="module-card tilt-card reveal">
+        <div class="module-icon">💬</div>
+        <div class="module-title">Chat Corporativo RAG</div>
+        <div class="module-desc">Sube tus documentos. Tu equipo pregunta en lenguaje natural y la IA responde con el conocimiento de tu empresa.</div>
+      </div>
+      <div class="module-card tilt-card reveal">
+        <div class="module-icon">📱</div>
+        <div class="module-title">Agente WhatsApp</div>
+        <div class="module-desc">Tu negocio responde, escala tickets y atiende clientes automáticamente — sin que nadie levante el teléfono.</div>
+      </div>
+      <div class="module-card tilt-card reveal">
+        <div class="module-icon">🎨</div>
+        <div class="module-title">Marketing Studio</div>
+        <div class="module-desc">Genera carruseles completos con copy e imágenes por IA. Contenido de calidad en minutos, no días.</div>
+      </div>
+      <div class="module-card tilt-card reveal">
+        <div class="module-icon">📅</div>
+        <div class="module-title">Calendario Corporativo</div>
+        <div class="module-desc">Agenda eventos y reuniones desde el chat con lenguaje natural. Tu asistente gestiona el tiempo de tu equipo.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ 6. CÓMO FUNCIONA -->
+<section id="como-funciona">
+  <div class="max-w">
+    <p class="section-label reveal" style="text-align:center;">El proceso</p>
+    <h2 class="section-title reveal" style="text-align:center;">Tres pasos. Sin código.</h2>
+    <div class="steps-wrap" id="steps-wrap">
+      <div class="step reveal">
+        <div class="step-num">01</div>
+        <div class="step-title">Conectamos Ovadaias</div>
+        <div class="step-desc">Integramos la plataforma con los documentos y datos de tu negocio.</div>
+      </div>
+      <div class="connector-wrap reveal">
+        <svg class="connector-svg" viewBox="0 0 80 2">
+          <line class="connector-line" id="line1" x1="0" y1="1" x2="80" y2="1"/>
+        </svg>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">02</div>
+        <div class="step-title">Tu equipo empieza</div>
+        <div class="step-desc">Panel intuitivo. Cero entrenamiento técnico requerido.</div>
+      </div>
+      <div class="connector-wrap reveal">
+        <svg class="connector-svg" viewBox="0 0 80 2">
+          <line class="connector-line" id="line2" x1="0" y1="1" x2="80" y2="1"/>
+        </svg>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">03</div>
+        <div class="step-title">La IA trabaja sola</div>
+        <div class="step-desc">24/7 respondiendo, generando y gestionando por tu empresa.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ 7. CASO DE ÉXITO -->
+<section id="caso">
+  <div class="max-w">
+    <p class="section-label reveal">Caso de éxito</p>
+    <h2 class="section-title reveal">Consultin: de 10 minutos<br>a 3 segundos</h2>
+    <div class="caso-card reveal">
+      <div class="caso-company">Laboratorio óptico · Costa Rica</div>
+      <p class="caso-quote">
+        "Implementamos Ovadaias con el inventario completo de lentes y monturas. El equipo ahora consulta disponibilidad, precios y compatibilidades en segundos — sin buscar en catálogos ni esperar al encargado."
+      </p>
+      <div class="caso-metrics">
+        <div class="caso-metric">
+          <div class="num counter" data-target="3" data-suffix=" seg" data-prefix="">3 seg</div>
+          <div class="lbl">Tiempo de respuesta promedio</div>
+        </div>
+        <div class="caso-metric">
+          <div class="num">100%</div>
+          <div class="lbl">Automatizado</div>
+        </div>
+        <div class="caso-metric">
+          <div class="num">0</div>
+          <div class="lbl">Líneas de código escritas</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ 8. PRECIOS -->
+<section id="precios">
+  <div class="max-w" style="text-align:center;">
+    <p class="section-label reveal">Precios</p>
+    <h2 class="section-title reveal">Menos que contratar a alguien.<br>Más poderoso que un equipo.</h2>
+    <div class="pricing-grid">
+      <div class="price-card reveal">
+        <div class="price-badge">Starter</div>
+        <div class="price-name">Starter</div>
+        <div class="price-amount">$200<span>/mes</span></div>
+        <ul class="price-features">
+          <li>1 agente IA activo</li>
+          <li>Knowledge Base (RAG)</li>
+          <li>WhatsApp bot</li>
+          <li>Panel de equipo</li>
+        </ul>
+        <a href="#cta-final" class="btn-ghost" style="width:100%;justify-content:center;">Comenzar →</a>
+      </div>
+      <div class="price-card featured reveal">
+        <div class="price-badge">Más popular</div>
+        <div class="price-name">Core</div>
+        <div class="price-amount">$500<span>/mes</span></div>
+        <ul class="price-features">
+          <li>Todos los módulos</li>
+          <li>Marketing Studio completo</li>
+          <li>Calendario corporativo IA</li>
+          <li>Soporte prioritario</li>
+          <li>Agentes ilimitados</li>
+        </ul>
+        <a href="#cta-final" class="btn-primary" style="width:100%;justify-content:center;">Solicitar Demo →</a>
+      </div>
+    </div>
+    <p class="price-note reveal">Sin contrato largo. Sin código. Sin sorpresas.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ 9. FAQ -->
+<section id="faq">
+  <div class="max-w" style="text-align:center;">
+    <p class="section-label reveal">FAQ</p>
+    <h2 class="section-title reveal">Preguntas frecuentes</h2>
+    <div class="faq-list">
+      <div class="faq-item reveal">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          ¿Necesito saber programar para usar Ovadaias?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">No. Ovadaias está diseñado para equipos de negocio, no de tecnología. Todo funciona desde un panel visual intuitivo. Nosotros hacemos la configuración inicial por ti.</div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          ¿Funciona con mi número de WhatsApp de negocio?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Sí. Nos conectamos a WhatsApp Business API usando tu número existente. El proceso de integración tarda menos de 24 horas.</div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          ¿Cuánto tarda en estar listo?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Entre 7 y 14 días hábiles desde el onboarding inicial. Incluye configuración, carga de documentos, pruebas y capacitación básica al equipo.</div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          ¿Puedo subir mis propios documentos y manuales?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Sí. Soportamos PDF, DOCX y TXT. El sistema indexa el contenido automáticamente y lo hace disponible para el asistente IA en cuestión de minutos.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ 10. CTA FINAL -->
+<section id="cta-final">
+  <div class="cta-bg"></div>
+  <div class="cta-glow"></div>
+  <div style="position:relative;z-index:1;">
+    <p class="section-label reveal" style="text-align:center;">Empieza hoy</p>
+    <h2 class="section-title reveal">Tu competencia ya<br>está automatizando.</h2>
+    <p class="section-sub reveal" style="margin:1rem auto 2.5rem;text-align:center;">¿Cuándo empiezas tú?</p>
+    <div style="text-align:center;">
+      <a href="mailto:hola@expertia.ai" class="btn-primary reveal">Hablar con un experto →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ 11. FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img src="uploads/1.png" alt="Expertia icon" style="height:36px;">
+      <p class="footer-tagline">Inteligencia artificial para negocios reales.</p>
+    </div>
+    <div class="footer-links">
+      <a href="#modulos">Producto</a>
+      <a href="#">Términos</a>
+      <a href="#">Privacidad</a>
+      <a href="#">Instagram</a>
+      <a href="#">LinkedIn</a>
+    </div>
+  </div>
+  <div class="footer-copy">© 2025 Expertia. Costa Rica.</div>
+</footer>
+
+
+
+// ─── PAGE LOAD CURTAIN ───
+window.addEventListener('load', () => {
+  setTimeout(() => document.getElementById('curtain').classList.add('gone'), 400);
+});
+
+// ─── SCROLL PROGRESS BAR ───
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  document.getElementById('scroll-bar').style.width = pct + '%';
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+}, { passive: true });
+
+// ─── PARTICLES (fewer on mobile) ───
+(function spawnParticles() {
+  const container = document.getElementById('particles');
+  if (!container) return;
+  const count = window.innerWidth < 768 ? 10 : 28;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 3 + 1;
+    const dur  = Math.random() * 14 + 10;
+    const delay = Math.random() * 14;
+    p.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%;
+      animation-duration:${dur}s;
+      animation-delay:${delay}s;
+    `;
+    container.appendChild(p);
+  }
+})();
+
+// ─── 3D TILT CARDS (desktop only) ───
+const isTouch = window.matchMedia('(hover: none)').matches;
+if (!isTouch) {
+  document.querySelectorAll('.tilt-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width  - 0.5;
+      const y = (e.clientY - r.top)  / r.height - 0.5;
+      card.style.transform = `scale(1.02) rotateX(${-y*10}deg) rotateY(${x*10}deg)`;
+      card.style.boxShadow = `${-x*20}px ${-y*20}px 40px rgba(123,53,255,0.25)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+      card.style.boxShadow = '';
+    });
+  });
+}
+
+// ─── MAGNETIC BUTTONS (desktop only) ───
+if (!isTouch) {
+  document.querySelectorAll('.btn-primary, .btn-demo').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const r = btn.getBoundingClientRect();
+      const x = (e.clientX - r.left - r.width  / 2) * 0.25;
+      const y = (e.clientY - r.top  - r.height / 2) * 0.25;
+      btn.style.transform = `translate(${x}px,${y}px) translateY(-1px)`;
+    });
+    btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+  });
+}
+
+// ─── CURSOR GLOW ───
+const glow = document.getElementById('cursor-glow');
+document.addEventListener('mousemove', e => {
+  glow.style.left = e.clientX + 'px';
+  glow.style.top  = e.clientY + 'px';
+}, { passive: true });
+
+// ─── TYPING EFFECT ───
+const phrases = ['Tu empresa.', 'Tu empresa. Con cerebro de IA.'];
+let charIndex = 0, phraseIndex = 0, typing = true;
+const typedEl = document.getElementById('typed-text');
+function typeLoop() {
+  const full = 'Tu empresa. Con cerebro de IA.';
+  if (typing) {
+    if (charIndex <= full.length) {
+      typedEl.textContent = full.slice(0, charIndex++);
+      setTimeout(typeLoop, charIndex < 12 ? 90 : 55);
+    } else {
+      typing = false; setTimeout(typeLoop, 3000);
+    }
+  } else {
+    if (charIndex > 0) {
+      typedEl.textContent = full.slice(0, --charIndex);
+      setTimeout(typeLoop, 30);
+    } else {
+      typing = true; setTimeout(typeLoop, 500);
+    }
+  }
+}
+setTimeout(typeLoop, 800);
+
+// ─── INTERSECTION OBSERVER (reveal + counters + connectors) ───
+const revealEls = document.querySelectorAll('.reveal');
+const counterEls = document.querySelectorAll('.counter');
+const connectorLines = document.querySelectorAll('.connector-line');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+
+    // Stagger siblings
+    const siblings = Array.from(el.parentElement.querySelectorAll(':scope > .reveal'));
+    const idx = siblings.indexOf(el);
+    el.style.transitionDelay = (idx * 0.08) + 's';
+    el.classList.add('visible');
+
+    observer.unobserve(el);
+  });
+}, { threshold: 0.12 });
+
+revealEls.forEach(el => observer.observe(el));
+
+// Counters
+const counterObs = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    const target = parseFloat(el.dataset.target);
+    const suffix = el.dataset.suffix || '';
+    const prefix = el.dataset.prefix || '';
+    let start = 0; const dur = 1400; const step = 16;
+    const inc = target / (dur / step);
+    const timer = setInterval(() => {
+      start = Math.min(start + inc, target);
+      el.textContent = prefix + (Number.isInteger(target) ? Math.round(start) : start.toFixed(1)) + suffix;
+      if (start >= target) clearInterval(timer);
+    }, step);
+    counterObs.unobserve(el);
+  });
+}, { threshold: 0.5 });
+counterEls.forEach(el => counterObs.observe(el));
+
+// SVG connectors
+const connectorObs = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    entry.target.querySelectorAll('.connector-line').forEach((line, i) => {
+      setTimeout(() => line.classList.add('drawn'), i * 400);
+    });
+    connectorObs.unobserve(entry.target);
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.connector-wrap').forEach(el => connectorObs.observe(el));
+
+// ─── FAQ ───
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+</script>
+</body>
+</html>
